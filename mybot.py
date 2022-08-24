@@ -1,4 +1,6 @@
 import logging
+import ephem
+import datetime
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 import settings
@@ -18,11 +20,23 @@ def tolk_to_me(update, context):
     print(text)
     update.message.reply_text(text)
 
+def get_planet(update, context):
+    print('Вызванна команда /planet')
+    print(update)
+    text = update.message.text.split()
+    planet = text[1]
+    date = datetime.datetime.now()
+    if planet.lower() == 'mars':
+        m = ephem.Mars(date)
+        update.message.reply_text(ephem.constellation(m))
+
+
 def main():
     mybot = Updater(settings.API_KEY, use_context=True) #request_kwargs=PROXY
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler('start', greet_user))
+    dp.add_handler(CommandHandler('planet', get_planet))
     dp.add_handler(MessageHandler(Filters.text, tolk_to_me))
 
     logging.info('Бот стартовал')
