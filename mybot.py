@@ -4,9 +4,9 @@ import datetime
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 import settings
-
-cities = ['москва', 'архангелск', 'курск', 'копенгаген',
- 'нижний новгород', 'донецк']
+"""'москва', 'архангелск', 'курск', 'копенгаген',
+ 'нижний новгород', 'донецк'"""
+cities = []
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 
@@ -41,20 +41,42 @@ def next_moon(update, context):
     print(date_sting)
     
 def play_cities(update, context):
-    user_messame = update.message.text.split(' ')
-    user_city = user_messame[1]
-    for city in cities:
-        if user_city.lower() == city:
-            cities.remove(user_city)
-            letter = user_city[-1]
-            for new_city[0] in cities:
-                if new_city[0] == letter:
-                    update.message.reply_text(new_city)
-                    pass
-                    cities.remove(new_city)
+    if cities == []:
+        update.massega.reply_text('Вы победили!')
+    else:
+        user_city = update.message.text.lower().split()[1]
+        letter = user_city[-1]
+        cities.remove(user_city)
+        for city in cities:
+            if city[0] == letter:
+                update.message.reply_text(city)
+                break
+        cities.remove(city)
 
     print(cities)
     
+def calculate (update, context):
+    try: 
+        text = update.message.text.split()
+        text.remove('/Calc')
+        for elemet in text:
+            for simbol in elemet:
+                if simbol == '-':
+                    index = elemet.find('-')
+                    update.message.reply_text(float(elemet[:index]) - float(elemet[index+1:]))
+                elif simbol == '+':
+                    index = elemet.find('+')
+                    update.message.reply_text(float(elemet[:index]) + float(elemet[index+1:]))
+                elif simbol == '*':
+                    index = elemet.find('*')
+                    update.message.reply_text(float(elemet[:index]) * float(elemet[index+1:]))
+                elif simbol == '/':
+                    index = elemet.find('/')
+                    update.message.reply_text(float(elemet[:index]) / float(elemet[index+1:]))
+    except ZeroDivisionError:
+        update.message.reply_text('На 0 делить не льзя')
+    except (TypeError, ValueError):
+        update.message.reply_text('Вы не ввели число')
 def main():
     mybot = Updater(settings.API_KEY, use_context=True) #request_kwargs=PROXY
 
@@ -64,6 +86,7 @@ def main():
     dp.add_handler(CommandHandler('planet', get_planet))
     dp.add_handler(CommandHandler('next_full_moon', next_moon))
     dp.add_handler(CommandHandler('cities', play_cities))
+    dp.add_handler(CommandHandler('Calc', calculate))
     dp.add_handler(MessageHandler(Filters.text, tolk_to_me))
 
 
