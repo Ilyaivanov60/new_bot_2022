@@ -12,19 +12,22 @@ PROXY = {'proxy_url': settings.PROXY_URL,
     'urllib3_proxy_kwargs': {'username': settings.PROXY_USERNAME, 'password': settings.PROXY_PASSWORD}}
 
 def greet_user(update, context):
-    smile = get_smile()
+    context.user_data['emoji'] = get_smile(context.user_data)
     print("Вызван /start")
-    update.message.reply_text(f'{smile}Здравствуй, пользователь!')
+    update.message.reply_text(f"{context.user_data['emoji']}Здравствуй, пользователь!")
 
 def talk_to_me(update, context):
-    smile = get_smile()
+    context.user_data['emoji'] = get_smile(context.user_data)
     text = update.message.text
-    update.message.reply_text(f'{text} {smile}')
+    update.message.reply_text(f"{text} {context.user_data['emoji']}")
 
-def get_smile():
-    smile = choice(settings.USER_EMOJI)
-    smile = emojize(smile)
-    return smile
+def get_smile(user_data):
+    if 'emoji' not in user_data:
+        smile = choice(settings.USER_EMOJI)
+        smile = emojize(smile)
+        return smile
+    return user_data['emoji']
+
 
 def play_random_numbers(user_number):
     bot_number = randint(user_number - 10, user_number + 10)
