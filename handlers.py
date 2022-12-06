@@ -1,6 +1,7 @@
 from glob import glob
+import os
 from random import choice
-from utils import get_smile, play_random_numbers, main_keyboard 
+from utils import get_smile, play_random_numbers, main_keyboard, has_object_on_image
 
 
 def greet_user(update, context):
@@ -38,3 +39,18 @@ def user_locetion(update, context):
     context.user_data['emoji'] = get_smile(context.user_data)
     coords = update.message.location
     update.message.reply_text(f"Ваши координаты{coords} {context.user_data['emoji']}", reply_markup=main_keyboard())
+
+def check_users_photo(upadte, context):
+    upadte.message.reply_text('Обрабатываем фото')
+    os.makedirs('downloads', exist_ok=True)
+    photo_file = context.bot.getFile(upadte.message.photo[-1].file_id)
+    file_name = os.path.join("downloads", f"{upadte.message.photo[-1].file_id}.jpg")
+    photo_file.download(file_name)
+    upadte.message.reply_text('Файл сохранен')
+    if has_object_on_image(file_name, 'dog'):
+        upadte.message.reply_text('Обноружена собачка, сохраняю в библиотеку')
+        new_file_name = os.path.join('images', f'cat_{photo_file.file_id}.jpg')
+        os.rename(file_name, new_file_name)
+    else:
+        os.remove(file_name)
+        upadte.message.reply_text('Тревога собачка не обнаружена')

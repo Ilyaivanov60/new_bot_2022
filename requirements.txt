@@ -10,3 +10,4 @@ tornado==6.2
 tzdata==2022.2
 tzlocal==4.2
 emoji==2.2.0
+clarifai-grpc==8.10.0 
