@@ -26,7 +26,9 @@ def play_random_numbers(user_number):
     return message
     
 def main_keyboard():
-    return ReplyKeyboardMarkup([['Прислать собачку', KeyboardButton("Мои координаты", request_location=True)]])
+    return ReplyKeyboardMarkup(
+        [['Прислать собачку', KeyboardButton("Мои координаты", request_location=True), 'Заполнить анкету']]
+        )
 
 def has_object_on_image(file_name, object_name): 
     channel = ClarifaiChannel.get_grpc_channel()
