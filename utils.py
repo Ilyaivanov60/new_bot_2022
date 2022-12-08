@@ -3,17 +3,9 @@ from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import resources_pb2, service_pb2, service_pb2_grpc
 from clarifai_grpc.grpc.api.status import status_pb2, status_code_pb2
 
-from emoji import emojize
-from random import choice, randint
+from random import randint
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 
-
-def get_smile(user_data):
-    if 'emoji' not in user_data:
-        smile = choice(settings.USER_EMOJI)
-        smile = emojize(smile)
-        return smile
-    return user_data['emoji']
 
 def play_random_numbers(user_number):
     bot_number = randint(user_number - 10, user_number + 10)
