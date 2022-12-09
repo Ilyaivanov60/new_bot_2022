@@ -5,7 +5,9 @@ from telegram.ext import Updater, ConversationHandler, CommandHandler,\
 from anketa import anketa_start, anketa_name, anketa_rating, anketa_skip,\
                    anketa_comment, anketa_dontknow
 from handlers import check_users_photo, greet_user, guess_number,\
-                     send_cat_picture, talk_to_me, user_locetion
+                     send_cat_picture, talk_to_me, user_locetion, subscribe,\
+                     unsubscribe
+from jobs import send_updates
 
 import settings
 
@@ -18,6 +20,10 @@ PROXY = {'proxy_url': settings.PROXY_URL,
 
 def main():
     mybot = Updater(settings.API_KEY, use_context=True)
+
+    jq = mybot.job_queue
+    jq.run_repeating(send_updates, interval=10, first=0)
+
     dp = mybot.dispatcher
     anketa = ConversationHandler(
         entry_points=[
@@ -40,6 +46,8 @@ def main():
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(CommandHandler('guess', guess_number))
     dp.add_handler(CommandHandler('cat', send_cat_picture))
+    dp.add_handler(CommandHandler('subscribe', subscribe))
+    dp.add_handler(CommandHandler('unsubscribe', unsubscribe))
     dp.add_handler(MessageHandler(Filters.regex('^(Прислать собачку)$'),
                    send_cat_picture))
     dp.add_handler(MessageHandler(Filters.photo, check_users_photo))

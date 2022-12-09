@@ -1,12 +1,11 @@
 from glob import glob
 import os
 from random import choice
-from db import get_or_create_user, db
+from db import db, get_or_create_user, subscribe_user, unsubscribe_user
 from utils import play_random_numbers, main_keyboard, has_object_on_image
 
 
 def greet_user(update, context):
-    print(update)
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     print("Вызван /start")
     update.message.reply_text(
@@ -56,20 +55,34 @@ def user_locetion(update, context):
                               reply_markup=main_keyboard())
 
 
-def check_users_photo(upadte, context):
-    user = get_or_create_user(db, upadte.effective_user,
-                              upadte.message.chat.id)
-    upadte.message.reply_text('Обрабатываем фото')
+def check_users_photo(update, context):
+    user = get_or_create_user(db, update.effective_user,
+                              update.message.chat.id)
+    update.message.reply_text('Обрабатываем фото')
     os.makedirs('downloads', exist_ok=True)
-    photo_file = context.bot.getFile(upadte.message.photo[-1].file_id)
+    photo_file = context.bot.getFile(update.message.photo[-1].file_id)
     file_name = os.path.join("downloads",
-                             f"{upadte.message.photo[-1].file_id}.jpg")
+                             f"{update.message.photo[-1].file_id}.jpg")
     photo_file.download(file_name)
-    upadte.message.reply_text('Файл сохранен')
+    update.message.reply_text('Файл сохранен')
     if has_object_on_image(file_name, 'dog'):
-        upadte.message.reply_text('Обноружена собачка, сохраняю в библиотеку')
+        update.message.reply_text('Обноружена собачка, сохраняю в библиотеку')
         new_file_name = os.path.join('images', f'cat_{photo_file.file_id}.jpg')
         os.rename(file_name, new_file_name)
     else:
         os.remove(file_name)
-        upadte.message.reply_text('Тревога собачка не обнаружена')
+        update.message.reply_text('Тревога собачка не обнаружена')
+
+
+def subscribe(update, context):
+    user = get_or_create_user(db, update.effective_user,
+                              update.message.chat.id)
+    subscribe_user(db, user)
+    update.message.reply_text('Вы успешно подписались!')
+
+
+def unsubscribe(update, context):
+    user = get_or_create_user(db, update.effective_user,
+                              update.message.chat.id)
+    unsubscribe_user(db, user)
+    update.message.reply_text('Вы успешно отписались!')

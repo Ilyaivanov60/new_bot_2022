@@ -7,10 +7,6 @@ import settings
 conn_str = settings.MONGO_LINK
 # set a 5-second connection timeout
 client = MongoClient(conn_str, serverSelectionTimeoutMS=5000)
-try:
-    print(client.server_info())
-except Exception:
-    print("Unable to connect to the server.")
 
 db = client[settings.MONGO_DB]
 
@@ -43,3 +39,22 @@ def save_anketa(db, user_id, anketa_data):
             {'_id': user['_id']},
             {'$push': {'anketa': anketa_data}}
         )
+
+
+def subscribe_user(db, user_data):
+    if not user_data.get('subsribed'):
+        db.users.update_one(
+            {'_id': user_data['_id']},
+            {'$set': {'subsribed': True}}
+        )
+
+
+def unsubscribe_user(db, user_data):
+    db.users.update_one(
+        {'_id': user_data['_id']},
+        {'$set': {'subsribed': False}}
+    )
+
+
+def get_subscribed(db):
+    return db.users.find({'subsribed': True})
