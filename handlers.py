@@ -14,13 +14,18 @@ def greet_user(update, context):
         reply_markup=main_keyboard()
         )
 
+
 def talk_to_me(update, context):
-    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
+    user = get_or_create_user(db, update.effective_user,
+                              update.message.chat.id)
     text = update.message.text
-    update.message.reply_text(f"{text} {user['emoji']}", reply_markup=main_keyboard())
+    update.message.reply_text(f"{text} {user['emoji']}",
+                              reply_markup=main_keyboard())
+
 
 def guess_number(update, context):
-    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
+    user = get_or_create_user(db, update.effective_user,
+                              update.message.chat.id)
     print(context.args)
     if context.args:
         try:
@@ -32,24 +37,33 @@ def guess_number(update, context):
         message = 'Ввидите число'
     update.message.reply_text(message, reply_markup=main_keyboard())
 
+
 def send_cat_picture(update, context):
-    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
+    user = get_or_create_user(db, update.effective_user,
+                              update.message.chat.id)
     cat_photos_list = glob('images/dog*.jp*g')
     cat_pic_filename = choice(cat_photos_list)
     chat_id = update.effective_chat.id
-    context.bot.send_photo(chat_id=chat_id, photo=open(cat_pic_filename, 'rb'), reply_markup=main_keyboard())
+    context.bot.send_photo(chat_id=chat_id, photo=open(cat_pic_filename, 'rb'),
+                           reply_markup=main_keyboard())
+
 
 def user_locetion(update, context):
-    user = get_or_create_user(db, update.effective_user, update.message.chat.id)
+    user = get_or_create_user(db, update.effective_user,
+                              update.message.chat.id)
     coords = update.message.location
-    update.message.reply_text(f"Ваши координаты{coords} {user['emoji']}", reply_markup=main_keyboard())
+    update.message.reply_text(f"Ваши координаты{coords} {user['emoji']}",
+                              reply_markup=main_keyboard())
+
 
 def check_users_photo(upadte, context):
-    user = get_or_create_user(db, upadte.effective_user, upadte.message.chat.id)
+    user = get_or_create_user(db, upadte.effective_user,
+                              upadte.message.chat.id)
     upadte.message.reply_text('Обрабатываем фото')
     os.makedirs('downloads', exist_ok=True)
     photo_file = context.bot.getFile(upadte.message.photo[-1].file_id)
-    file_name = os.path.join("downloads", f"{upadte.message.photo[-1].file_id}.jpg")
+    file_name = os.path.join("downloads",
+                             f"{upadte.message.photo[-1].file_id}.jpg")
     photo_file.download(file_name)
     upadte.message.reply_text('Файл сохранен')
     if has_object_on_image(file_name, 'dog'):
