@@ -2,6 +2,7 @@ from glob import glob
 import os
 from random import choice
 from db import db, get_or_create_user, subscribe_user, unsubscribe_user
+from jobs import alarm
 from utils import play_random_numbers, main_keyboard, has_object_on_image
 
 
@@ -86,3 +87,13 @@ def unsubscribe(update, context):
                               update.message.chat.id)
     unsubscribe_user(db, user)
     update.message.reply_text('Вы успешно отписались!')
+
+
+def set_alarm(update, context):
+    try:
+        alarm_seconds = abs(int(context.args[0]))
+        context.job_queue.run_once(alarm, alarm_seconds,
+                                   context=update.message.chat.id)
+        update.message.reply_text(f'Увдедомление через {alarm_seconds}')
+    except (ValueError, TypeError):
+        update.message.reply_text('Ввидите целое чискло секунд после комнды')
