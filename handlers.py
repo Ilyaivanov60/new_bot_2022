@@ -3,7 +3,7 @@ import os
 from random import choice
 from db import db, get_or_create_user, subscribe_user, unsubscribe_user
 from jobs import alarm
-from utils import play_random_numbers, main_keyboard, has_object_on_image
+from utils import play_random_numbers, main_keyboard, has_object_on_image, cat_rating_inline_keyboard
 
 
 def greet_user(update, context):
@@ -44,8 +44,9 @@ def send_cat_picture(update, context):
     cat_photos_list = glob('images/dog*.jp*g')
     cat_pic_filename = choice(cat_photos_list)
     chat_id = update.effective_chat.id
-    context.bot.send_photo(chat_id=chat_id, photo=open(cat_pic_filename, 'rb'),
-                           reply_markup=main_keyboard())
+    context.bot.send_photo(chat_id=chat_id,
+                           photo=open(cat_pic_filename, 'rb'),
+                           reply_markup=cat_rating_inline_keyboard(cat_pic_filename))
 
 
 def user_locetion(update, context):
@@ -97,3 +98,9 @@ def set_alarm(update, context):
         update.message.reply_text(f'Увдедомление через {alarm_seconds}')
     except (ValueError, TypeError):
         update.message.reply_text('Ввидите целое чискло секунд после комнды')
+
+
+def cat_picture_rating(update, context):
+    update.callback_query.answer()
+    text = f"Выбран вариант: {update.callback_query.data}"
+    update.callback_query.edit_message_caption(caption=text)

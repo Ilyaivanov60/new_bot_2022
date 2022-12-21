@@ -4,7 +4,7 @@ from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import resources_pb2, service_pb2, service_pb2_grpc
 from clarifai_grpc.grpc.api.status import status_code_pb2
 
-from telegram import ReplyKeyboardMarkup, KeyboardButton
+from telegram import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 import settings
 
 
@@ -54,6 +54,17 @@ def check_responce_for_obkect(response, object_name):
         print(f"Ошибка распознавания: {response.outputs[0].status.details}")
 
     return False
+
+
+def cat_rating_inline_keyboard(image_name):
+    callback_text = f"rate|{image_name}|"
+    inlinekeyboard = [
+        [
+            InlineKeyboardButton("Нравится", callback_data=callback_text + '1'),
+            InlineKeyboardButton("Не нравится", callback_data=callback_text +'-1')
+        ]
+    ]
+    return InlineKeyboardMarkup(inlinekeyboard)
 
 
 if __name__ == '__main__':
