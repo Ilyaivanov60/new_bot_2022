@@ -1,9 +1,11 @@
 from glob import glob
 import os
 from random import choice
-from db import db, get_or_create_user, subscribe_user, unsubscribe_user
+from db import db, get_or_create_user, subscribe_user, unsubscribe_user,\
+                   save_cat_image_vote, user_voted, get_image_rating
 from jobs import alarm
-from utils import play_random_numbers, main_keyboard, has_object_on_image, cat_rating_inline_keyboard
+from utils import play_random_numbers, main_keyboard, has_object_on_image,\
+                  cat_rating_inline_keyboard
 
 
 def greet_user(update, context):
@@ -44,9 +46,19 @@ def send_cat_picture(update, context):
     cat_photos_list = glob('images/dog*.jp*g')
     cat_pic_filename = choice(cat_photos_list)
     chat_id = update.effective_chat.id
-    context.bot.send_photo(chat_id=chat_id,
-                           photo=open(cat_pic_filename, 'rb'),
-                           reply_markup=cat_rating_inline_keyboard(cat_pic_filename))
+    if user_voted(db, cat_pic_filename, user["user_id"]):
+        rating = get_image_rating(db, cat_pic_filename)
+        keyboard = None
+        caption = f"Рейтинг картинки {rating}!"
+    else:
+        keyboard = cat_rating_inline_keyboard(cat_pic_filename)
+        caption = None
+    context.bot.send_photo(
+        chat_id=chat_id,
+        photo=open(cat_pic_filename, 'rb'),
+        reply_markup=keyboard,
+        caption=caption
+        )
 
 
 def user_locetion(update, context):
@@ -102,5 +114,10 @@ def set_alarm(update, context):
 
 def cat_picture_rating(update, context):
     update.callback_query.answer()
-    text = f"Выбран вариант: {update.callback_query.data}"
-    update.callback_query.edit_message_caption(caption=text)
+    callback_type, image_name, vote = update.callback_query.data.split("|")
+    vote = int(vote)
+    user = get_or_create_user(db, update.effective_user,
+                              update.effective_chat.id)
+    save_cat_image_vote(db, user, image_name, vote)
+    rating = get_image_rating(db, image_name)
+    update.callback_query.edit_message_caption(caption=f"Рейтинг картинки {rating}")
