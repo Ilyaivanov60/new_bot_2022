@@ -4,8 +4,8 @@ from random import choice
 from db import db, get_or_create_user, subscribe_user, unsubscribe_user,\
                    save_cat_image_vote, user_voted, get_image_rating
 from jobs import alarm
-from utils import play_random_numbers, main_keyboard, has_object_on_image,\
-                  cat_rating_inline_keyboard
+from utils import play_random_numbers, get_bot_number, main_keyboard,\
+                  has_object_on_image, cat_rating_inline_keyboard
 
 
 def greet_user(update, context):
@@ -32,7 +32,8 @@ def guess_number(update, context):
     if context.args:
         try:
             user_number = int(context.args[0])
-            message = play_random_numbers(user_number)
+            bot_number = get_bot_number(user_number)
+            message = play_random_numbers(user_number, bot_number)
         except (ValueError, TypeError):
             message = 'Введите челое число'
     else:

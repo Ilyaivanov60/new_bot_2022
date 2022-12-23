@@ -1,0 +1,42 @@
+[{
+  "_id": {
+    "$oid": "63a4adbc89fecf3ef7dde9c1"
+  },
+  "image_name": "images/dog4.jpeg",
+  "votes": [
+    {
+      "user_id": 478819983,
+      "vote": 1
+    },
+    {
+      "user_id": 478819982,
+      "vote": 1
+    },
+    {
+      "user_id": 478819984,
+      "vote": 1
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "63a4b7c2422d8818528e39f6"
+  },
+  "image_name": "images/dog3.jpeg",
+  "votes": [
+    {
+      "user_id": 478819984,
+      "vote": -1
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "63a4c23c6a8a43d96e143603"
+  },
+  "image_name": "images/dog1.jpeg",
+  "votes": [
+    {
+      "user_id": 478819984,
+      "vote": 1
+    }
+  ]
+}]

@@ -8,16 +8,17 @@ from telegram import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, 
 import settings
 
 
-def play_random_numbers(user_number):
-    bot_number = randint(user_number - 10, user_number + 10)
+def get_bot_number(user_number):
+    return randint(user_number - 10, user_number + 10)
+
+
+def play_random_numbers(user_number, bot_number):
     if user_number > bot_number:
-        message = f"Ваше число {user_number}, мое число{bot_number},\
-            вы выйграли!"
+        message = f"Ваше число {user_number}, мое {bot_number}, вы выйграли!"
     elif user_number == bot_number:
-        message = f"Ваше число {user_number}, мое число{bot_number}, ничья!"
+        message = f"Ваше число {user_number}, мое {bot_number}, ничья!"
     else:
-        message = f"Ваше число {user_number}, мое число{bot_number},\
-            вы проиграли!"
+        message = f"Ваше число {user_number}, мое {bot_number}, вы проиграли!"
     return message
 
 
