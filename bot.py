@@ -4,9 +4,8 @@ import pytz
 
 from telegram.bot import Bot
 from telegram.ext import Updater, ConversationHandler, CommandHandler,\
-                         MessageHandler, Filters, CallbackQueryHandler 
+                         MessageHandler, Filters, CallbackQueryHandler
 from telegram.ext import messagequeue as mq
-#from telegram.ext.jobqueue import Days
 from telegram.utils.request import Request
 
 from anketa import anketa_start, anketa_name, anketa_rating, anketa_skip,\
@@ -43,6 +42,7 @@ class MQBot(Bot):
 
 
 def main():
+    "initialize bot, db, updater and handlers"
     request = Request(
         con_pool_size=8
     )
@@ -51,8 +51,7 @@ def main():
 
     jq = mybot.job_queue
     target_time = time(12, 0, tzinfo=pytz.timezone('US/Eastern'))
-    #targer_days = (Days.MON, Days.WED, Days.FRI)
-    jq.run_daily(send_updates, target_time)# targer_days
+    jq.run_daily(send_updates, target_time)
 
     dp = mybot.dispatcher
     anketa = ConversationHandler(

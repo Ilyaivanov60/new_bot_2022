@@ -5,6 +5,7 @@ from utils import main_keyboard
 
 
 def anketa_start(update, context):
+    "star form for fill in"
     update.message.reply_text(
         'Привет! Как вас зовут?',
         reply_markup=ReplyKeyboardRemove()
@@ -13,6 +14,7 @@ def anketa_start(update, context):
 
 
 def anketa_name(update, context):
+    "initialize user name"
     user_name = update.message.text
     if len(user_name.split()) < 2:
         update.message.reply_text('Ввидите имя и фамилию')
@@ -38,6 +40,7 @@ def anketa_rating(update, context):
 
 
 def anketa_comment(update, context):
+    "save user comment in form"
     context.user_data['anketa']['comment'] = update.message.text
     user = get_or_create_user(db, update.effective_user,
                               update.message.chat.id)
@@ -49,6 +52,7 @@ def anketa_comment(update, context):
 
 
 def anketa_skip(update, context):
+    "skip part of form"
     user = get_or_create_user(db, update.effective_user,
                               update.message.chat.id)
     save_anketa(db, user['user_id'], context.user_data['anketa'])

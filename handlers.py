@@ -18,6 +18,7 @@ def greet_user(update, context):
 
 
 def talk_to_me(update, context):
+    "echo finction, reply user same text"
     user = get_or_create_user(db, update.effective_user,
                               update.message.chat.id)
     text = update.message.text

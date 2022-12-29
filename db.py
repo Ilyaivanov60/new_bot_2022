@@ -12,6 +12,7 @@ db = client[settings.MONGO_DB]
 
 
 def get_or_create_user(db, effective_user, chat_id):
+    "get or create user from db"
     user = db.users.find_one({'user_id': effective_user.id})
     if not user:
         user = {
@@ -27,6 +28,7 @@ def get_or_create_user(db, effective_user, chat_id):
 
 
 def save_anketa(db, user_id, anketa_data):
+    "save user's form in db"
     user = db.users.find_one({'user_id': user_id})
     anketa_data['created'] = datetime.now()
     if 'anketa' not in user:
@@ -42,6 +44,7 @@ def save_anketa(db, user_id, anketa_data):
 
 
 def subscribe_user(db, user_data):
+    "check user subscription"
     if not user_data.get('subsribed'):
         db.users.update_one(
             {'_id': user_data['_id']},
@@ -50,6 +53,7 @@ def subscribe_user(db, user_data):
 
 
 def unsubscribe_user(db, user_data):
+    "check user unsubscription"
     db.users.update_one(
         {'_id': user_data['_id']},
         {'$set': {'subsribed': False}}
@@ -57,10 +61,12 @@ def unsubscribe_user(db, user_data):
 
 
 def get_subscribed(db):
+    "get all subsribed users"
     return db.users.find({'subsribed': True})
 
 
 def save_cat_image_vote(db, user_data, image_name, vote):
+    "save vote result"
     image = db.images.find_one({"image_name": image_name})
     if not image:
         image = {
@@ -76,6 +82,7 @@ def save_cat_image_vote(db, user_data, image_name, vote):
 
 
 def user_voted(db, image_name, user_id):
+    "check how user voted"
     if db.images.find_one({"image_name": image_name, "votes.user_id": user_id}):
         return True
     return False
